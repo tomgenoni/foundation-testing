@@ -1,24 +1,20 @@
 const Inky = require('inky').Inky;
-const cheerio = require('cheerio');
 const pretty = require('pretty');
 const fs = require('fs');
 const marked = require('marked');
+const inky = new Inky();
 
 const md = `
 
-# Foobbar
+# foobar
 
-Oh, to be a center fielder, a center fielder and nothing more.
-
-<div>hello</div>
-
-\`\`\`foundation
+\`\`\`fnd
 <button href="foo">bar</button>
 \`\`\`
 
-<div>second</div>
+<div>Doctor Spielvogel, it alleviates nothing fixing the blame - blaming is still ailing, of course, of course - but nonetheless, what was it with these Jewish parents, what, that they were able to make us little Jewish boys believe ourselves to be princes on the one hand, unique as unicorns on the one hand, geniuses and brilliant like nobody has ever been brilliant and beautiful before in the history of childhood - saviors and sheer perfection on the one hand, and such bumbling, incompetent, thoughtless, helpless, selfish, evil little shits, little ingrates, on the other!</div>
 
-\`\`\`foundation
+\`\`\`fnd
 <button href="another">zoo</button>
 \`\`\`
 
@@ -27,25 +23,23 @@ Oh, to be a center fielder, a center fielder and nothing more.
 const tokens = marked.lexer(md);
 
 tokens.forEach(function(token, index) {
-  if (token.type === 'code' && token.lang === 'foundation') {
-    const inky = new Inky();
+  // If the language of the pre example is `fnd`
+  if (token.lang === 'fnd') {
+    const codeExample = token.text;
 
-    // Loads the text from the token into cheerio.
-    const foundationPre = cheerio.load(token.text);
+    // Explode code example to inky equivalent
+    const inkyHtml = inky.releaseTheKraken(codeExample);
 
-    // Cheerio outputs full html code, this isolates the output, removing html/body tags
-    const cheerioIsolatedCode = foundationPre.html('body > *');
+    const newObj = {
+      type: 'html',
+      pre: false,
+      text: `<div class="fnd-example">${inkyHtml}</div>`,
+    };
 
-    console.log(cheerioIsolatedCode);
-
-    // Converts the now isolated code to Inky friendly
-    const codeExample = inky.releaseTheKraken(cheerioIsolatedCode);
-    const newObj = { type: 'html', pre: false, text: codeExample };
-
-    // Insert rendered example above code
+    // Insert rendered example above code example
     tokens[index - 1] = newObj;
   }
 });
 
 const html = marked.parser(tokens);
-console.log(html);
+console.log(pretty(html));
