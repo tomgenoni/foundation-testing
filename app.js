@@ -10,62 +10,42 @@ const md = `
 
 Oh, to be a center fielder, a center fielder and nothing more.
 
-<div>foo</div>
+<div>hello</div>
 
 \`\`\`foundation
 <button href="foo">bar</button>
 \`\`\`
 
-`;
+<div>second</div>
 
-const newTokens = [];
+\`\`\`foundation
+<button href="another">zoo</button>
+\`\`\`
+
+`;
 
 const tokens = marked.lexer(md);
 
-tokens.forEach(function(token) {
+tokens.forEach(function(token, index) {
   if (token.type === 'code' && token.lang === 'foundation') {
-    const i = new Inky();
+    const inky = new Inky();
+
+    // Loads the text from the token into cheerio.
     const foundationPre = cheerio.load(token.text);
-    const inkyCode = foundationPre.html('body > *');
-    const codeExample = i.releaseTheKraken(inkyCode);
-    newTokens.push({
-      type: 'html',
-      pre: false,
-      text: codeExample,
-    });
+
+    // Cheerio outputs full html code, this isolates the output, removing html/body tags
+    const cheerioIsolatedCode = foundationPre.html('body > *');
+
+    console.log(cheerioIsolatedCode);
+
+    // Converts the now isolated code to Inky friendly
+    const codeExample = inky.releaseTheKraken(cheerioIsolatedCode);
+    const newObj = { type: 'html', pre: false, text: codeExample };
+
+    // Insert rendered example above code
+    tokens[index - 1] = newObj;
   }
-  newTokens.push(token);
 });
 
-const html = marked.parser(newTokens);
+const html = marked.parser(tokens);
 console.log(html);
-
-// console.log(tokens);
-
-// const src = `
-// title: button
-// description: this is the button description
-// ---
-
-// before
-
-// \`\`\`foundation
-// <button href="#">My Button</button>
-// \`\`\`
-
-// after
-// `;
-
-// // The same plugin settings are passed in the constructor
-// // const i = new Inky();
-// // const html = cheerio.load(src);
-
-// // // Now unleash the fury
-// // const convertedHtml = i.releaseTheKraken(html);
-
-// // // Prettier
-// // const prettyHtml = pretty(convertedHtml);
-
-// // console.log(prettyHtml);
-
-// console.log(marked(src));
