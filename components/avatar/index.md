@@ -1,6 +1,6 @@
 ---
-title: Button
-description: this is a button.
+title: Avatar
+description: this is an avatar.
 ---
 
 ```

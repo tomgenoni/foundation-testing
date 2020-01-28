@@ -1,8 +1,13 @@
 const Inky = require('inky').Inky;
-const pretty = require('pretty');
 const fs = require('fs');
 const marked = require('marked');
 const glob = require('glob');
+const fm = require('front-matter');
+const Handlebars = require('handlebars');
+
+const template = Handlebars.compile('Name: {{fm.title}}');
+
+//----------- Hijack markdown renderer -------------//
 
 const inky = new Inky();
 
@@ -33,19 +38,34 @@ renderer.code = function(text, lang) {
   return output;
 };
 
-function doStuff(files) {
+//----------- Build the page data object -------------//
+
+function renderDocs(data) {
+  const source = fs.readFileSync('./src/template/index.hbs', 'utf8').toString();
+  const template = Handlebars.compile(source);
+  const html = template(data);
+  fs.writeFileSync('./dist/index.html', html, 'utf8');
+}
+
+function buildPageData(files) {
+  const allEntryData = [];
+
   files.forEach(function(file) {
-    fs.readFile(file, function(err, data) {
-      if (err) {
-        console.log(err);
-      } else {
-        const html = marked(data.toString(), { renderer: renderer });
-        console.log(pretty(html));
-      }
-    });
+    const content = fs.readFileSync(file, 'utf8').toString();
+    const filedata = fm(content);
+    const markdownHtml = marked(filedata.body, { renderer: renderer });
+
+    const data = {
+      fm: filedata.attributes,
+      body: markdownHtml,
+    };
+
+    allEntryData.push(data);
   });
+
+  renderDocs(allEntryData);
 }
 
 glob('./components/**/*md', function(er, files) {
-  doStuff(files);
+  buildPageData(files);
 });

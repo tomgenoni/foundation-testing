@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Thumbprint for Emails Documentation</title>
+
+
+    <link rel="stylesheet" href="https://unpkg.com/@thumbtack/thumbprint-global-css@^0.1.15">
+    <link rel="stylesheet" href="https://unpkg.com/@thumbtack/thumbprint-scss@^2.0.7">
+    <link rel="stylesheet" href="https://unpkg.com/@thumbtack/thumbprint-atomic@^3.1.4">
+    <link rel="stylesheet" href="foundation.css">
+
+    <style>
+        @font-face {
+            font-family: 'Mark';
+            font-weight: 400;
+            src: url(https://fonts.thumbtack.com/mark/mark-tt-subset.woff2) format('woff2'),
+                url(https://fonts.thumbtack.com/mark/mark-tt-subset.woff) format('woff');
+        }
+
+        @font-face {
+            font-family: 'Mark';
+            font-weight: 700;
+            src: url(https://fonts.thumbtack.com/mark/mark-tt-subset-bold.woff2) format('woff2'),
+                url(https://fonts.thumbtack.com/mark/mark-tt-subset-bold.woff) format('woff');
+        }
+
+        .inky-example {
+            padding: 16px;
+            border: 2px solid #aaa;
+        }
+
+        pre {
+            padding: 16px;
+            background-color: #f9f9f9;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        p {
+            margin-bottom: 16px;
+        }
+    </style>
+
+</head>
+
+<body class="pa5">
+    {{#each this}}
+    <div class="mb6">
+        <h1 class="b">{{{fm.title}}}</h1>
+        <div class="body">
+            {{{body}}}
+        </div>
+    </div>
+    {{/each}}
+</body>
+
+</html>
