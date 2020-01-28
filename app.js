@@ -2,44 +2,50 @@ const Inky = require('inky').Inky;
 const pretty = require('pretty');
 const fs = require('fs');
 const marked = require('marked');
+const glob = require('glob');
+
 const inky = new Inky();
 
-const md = `
+function htmlEntities(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
 
-# foobar
-
-\`\`\`fnd
-<button href="foo">bar</button>
-\`\`\`
-
-<div>Doctor Spielvogel, it alleviates nothing fixing the blame - blaming is still ailing, of course, of course - but nonetheless, what was it with these Jewish parents, what, that they were able to make us little Jewish boys believe ourselves to be princes on the one hand, unique as unicorns on the one hand, geniuses and brilliant like nobody has ever been brilliant and beautiful before in the history of childhood - saviors and sheer perfection on the one hand, and such bumbling, incompetent, thoughtless, helpless, selfish, evil little shits, little ingrates, on the other!</div>
-
-\`\`\`fnd
-<button href="another">zoo</button>
-\`\`\`
-
-`;
-
-const tokens = marked.lexer(md);
-
-tokens.forEach(function(token, index) {
-  // If the language of the pre example is `fnd`
-  if (token.lang === 'fnd') {
-    const codeExample = token.text;
-
-    // Explode code example to inky equivalent
-    const inkyHtml = inky.releaseTheKraken(codeExample);
-
-    const newObj = {
-      type: 'html',
-      pre: false,
-      text: `<div class="fnd-example">${inkyHtml}</div>`,
-    };
-
-    // Insert rendered example above code example
-    tokens[index - 1] = newObj;
+const renderer = new marked.Renderer();
+renderer.code = function(text, lang) {
+  // If language is empty or `inky`, set it to HTML, otherwise pass through language
+  const language = lang === '' || 'inky' ? 'html' : lang;
+  // For the code example escape the left/right brackets
+  const escapedHtml = htmlEntities(text);
+  // Construct the pre HTML code
+  const preCode = `<pre class="language-${language}"><code>${escapedHtml}</code></pre>`;
+  // Output will always include at least the pre HTML code
+  let output = preCode;
+  // If we have an `inky` language build the example and prepend it to the pre HTML code
+  if (lang === 'inky') {
+    const inkyHtml = inky.releaseTheKraken(text);
+    const exampleHtml = `<div class="inky-example">${inkyHtml}</div>`;
+    output = exampleHtml + output;
   }
-});
+  return output;
+};
 
-const html = marked.parser(tokens);
-console.log(pretty(html));
+function doStuff(files) {
+  files.forEach(function(file) {
+    fs.readFile(file, function(err, data) {
+      if (err) {
+        console.log(err);
+      } else {
+        const html = marked(data.toString(), { renderer: renderer });
+        console.log(pretty(html));
+      }
+    });
+  });
+}
+
+glob('./components/**/*md', function(er, files) {
+  doStuff(files);
+});
