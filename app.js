@@ -5,8 +5,6 @@ const glob = require('glob');
 const fm = require('front-matter');
 const Handlebars = require('handlebars');
 
-const template = Handlebars.compile('Name: {{fm.title}}');
-
 //----------- Hijack markdown renderer -------------//
 
 const inky = new Inky();
