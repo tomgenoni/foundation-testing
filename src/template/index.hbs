@@ -11,9 +11,10 @@
     <link rel="stylesheet" href="https://unpkg.com/@thumbtack/thumbprint-global-css@^0.1.15">
     <link rel="stylesheet" href="https://unpkg.com/@thumbtack/thumbprint-scss@^2.0.7">
     <link rel="stylesheet" href="https://unpkg.com/@thumbtack/thumbprint-atomic@^3.1.4">
-    <!-- Will need to add foundation css that's scoped inside ".inky-example" -->
-    <link rel="stylesheet" href="css/foundation-scoped.css">
+    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/local.css">
+    <!-- Foundation css is scoped inside ".inky-example" -->
+    <link rel="stylesheet" href="css/foundation-scoped.css">
 
     <style>
         @font-face {
@@ -29,35 +30,21 @@
             src: url(https://fonts.thumbtack.com/mark/mark-tt-subset-bold.woff2) format('woff2'),
                 url(https://fonts.thumbtack.com/mark/mark-tt-subset-bold.woff) format('woff');
         }
-
-        .inky-example {
-            padding: 16px;
-            border: 2px solid #aaa;
-        }
-
-        pre {
-            padding: 16px;
-            background-color: #f9f9f9;
-            margin-bottom: 16px;
-            font-size: 14px;
-        }
-
-        p {
-            margin-bottom: 16px;
-        }
     </style>
 
 </head>
 
 <body class="pa5">
+
     {{#each this}}
     <div class="mb6">
-        <h1 class="b">{{{fm.title}}}</h1>
+        <h2 class="b">{{{fm.title}}}</h2>
         <div class="body">
             {{{body}}}
         </div>
     </div>
     {{/each}}
+
 </body>
 
 </html>

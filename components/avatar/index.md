@@ -4,7 +4,11 @@ description: this is an avatar.
 ---
 
 ```
-<button href="#">My Button</button>
+<div>
+    <span>
+        This is just a random code example.
+    </span>
+</div>
 ```
 
 lOh, to be a center fielder, a center fielder and nothing more

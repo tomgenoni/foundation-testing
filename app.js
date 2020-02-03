@@ -24,13 +24,13 @@ renderer.code = function(text, lang) {
   // For the code example escape the left/right brackets
   const escapedHtml = htmlEntities(text);
   // Construct the pre HTML code
-  const preCode = `<pre class="language-${language}"><code>${escapedHtml}</code></pre>`;
+  const preCode = `<pre class="language-${language} br2 bg-gray-200 pa3 mb4"><code>${escapedHtml}</code></pre>`;
   // Output will always include at least the pre HTML code
   let output = preCode;
   // If we have an `inky` language build the example and prepend it to the pre HTML code
   if (lang === 'inky') {
     const inkyHtml = inky.releaseTheKraken(text);
-    const exampleHtml = `<div class="inky-example">${inkyHtml}</div>`;
+    const exampleHtml = `<div class="inky-example br2 ba b-gray-300 bw-2 pa3 mb1">${inkyHtml}</div>`;
     output = exampleHtml + output;
   }
   return output;
